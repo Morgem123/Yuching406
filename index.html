@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>王煜景 Yu-Ching Wang</title>
+  <meta name="description" content="Just do it." />
+  <style>
+    /* ── Reset ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    /* ── 全站變數 (Light) ── */
+    :root {
+      --bg:       #faf9f7;
+      --surface:  #ffffff;
+      --text:     #1a1a1a;
+      --muted:    #6b6b6b;
+      --border:   #e4e2dd;
+      --accent:   #1a1a1a;
+      --radius:   10px;
+      --font-body: 'Georgia', 'Times New Roman', serif;
+      --font-ui:   system-ui, -apple-system, sans-serif;
+    }
+
+    /* ── Dark Mode 變數 ── */
+    [data-theme="dark"] {
+      --bg:      #111110;
+      --surface: #1c1c1a;
+      --text:    #f0ede8;
+      --muted:   #888580;
+      --border:  #2e2d2a;
+      --accent:  #f0ede8;
+    }
+
+    /* ── 基礎 ── */
+    body {
+      font-family: var(--font-body);
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+      min-height: 100vh;
+      transition: background 0.3s ease, color 0.3s ease;
+    }
+
+    a { color: inherit; text-decoration: none; }
+
+    /* ── 導覽列 ── */
+    nav {
+      position: sticky;
+      top: 0;
+      background: color-mix(in srgb, var(--bg) 85%, transparent);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      z-index: 100;
+      transition: background 0.3s ease, border-color 0.3s ease;
+    }
+    .nav-inner {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .logo {
+      font-size: 17px;
+      font-weight: normal;
+      letter-spacing: -0.3px;
+    }
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+    .nav-links {
+      display: flex;
+      gap: 28px;
+      list-style: none;
+    }
+    .nav-links a {
+      font-family: var(--font-ui);
+      font-size: 13px;
+      color: var(--muted);
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--text); }
+
+    /* ── 深色模式切換按鈕 ── */
+    .theme-toggle {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      width: 52px;
+      height: 28px;
+      cursor: pointer;
+      position: relative;
+      transition: background 0.3s ease, border-color 0.3s ease;
+      flex-shrink: 0;
+    }
+    .theme-toggle::before {
+      content: '';
+      position: absolute;
+      top: 3px;
+      left: 3px;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: var(--text);
+      transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), background 0.3s ease;
+    }
+    [data-theme="dark"] .theme-toggle::before {
+      transform: translateX(24px);
+    }
+    .theme-toggle-icon {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 12px;
+      transition: opacity 0.2s;
+      pointer-events: none;
+    }
+    .icon-sun  { left: 6px;  opacity: 1; }
+    .icon-moon { right: 6px; opacity: 0; }
+    [data-theme="dark"] .icon-sun  { opacity: 0; }
+    [data-theme="dark"] .icon-moon { opacity: 1; }
+
+    /* ── 主要內容容器 ── */
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    /* ── Hero 區塊 ── */
+    .hero {
+      padding: 5rem 0 4rem;
+      text-align: center;
+    }
+    .hero-tag {
+      font-family: var(--font-ui);
+      font-size: 11px;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      color: var(--muted);
+      display: block;
+      margin-bottom: 1.5rem;
+    }
+    .hero h1 {
+      font-size: clamp(36px, 6vw, 56px);
+      font-weight: normal;
+      line-height: 1.1;
+      margin-bottom: 1.25rem;
+      letter-spacing: -1px;
+    }
+    .hero p {
+      font-size: 17px;
+      color: var(--muted);
+      max-width: 480px;
+      margin: 0 auto 2rem;
+    }
+    .btn-row {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .btn {
+      font-family: var(--font-ui);
+      font-size: 14px;
+      padding: 10px 24px;
+      border-radius: var(--radius);
+      cursor: pointer;
+      transition: opacity 0.2s;
+      border: 1px solid transparent;
+    }
+    .btn:hover { opacity: 0.75; }
+    .btn-dark {
+      background: var(--text);
+      color: var(--bg);
+    }
+    .btn-outline {
+      background: transparent;
+      color: var(--text);
+      border-color: var(--border);
+    }
+
+    /* ── 分隔線 ── */
+    hr {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 3rem 0;
+      transition: border-color 0.3s ease;
+    }
+
+    /* ── 區塊標籤 ── */
+    .section-label {
+      font-family: var(--font-ui);
+      font-size: 16px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 1.5rem;
+    }
+
+    /* ── 關於區塊 ── */
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 2fr;
+      gap: 3rem;
+      align-items: start;
+    }
+    .avatar {
+      width: 100%;
+      aspect-ratio: 1;
+      border-radius: 50%;
+      background: var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 48px;
+      color: var(--muted);
+      object-fit: cover;
+      object-position: top;
+    }
+    .about-text h2 {
+      font-size: 26px;
+      font-weight: normal;
+      margin-bottom: 1rem;
+    }
+    .about-text p {
+      color: var(--muted);
+      font-size: 16px;
+      margin-bottom: 0.75rem;
+    }
+
+    /* ── 技能區塊 ── */
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 12px;
+    }
+    .skill-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.25rem;
+      transition: background 0.3s ease, border-color 0.3s ease;
+    }
+    .skill-icon {
+      font-size: 22px;
+      margin-bottom: 10px;
+    }
+    .skill-title {
+      font-family: var(--font-ui);
+      font-size: 16px;
+      font-weight: 500;
+      margin-bottom: 4px;
+    }
+    .skill-desc {
+      font-family: var(--font-ui);
+      font-size: 14px;
+      color: var(--muted);
+    }
+
+    /* ── 作品區塊 ── */
+    .project-list { display: flex; flex-direction: column; gap: 12px; }
+    .project-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.25rem 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: border-color 0.2s, background 0.3s ease;
+    }
+    .project-card:hover { border-color: var(--text); }
+    .project-name {
+      font-size: 15px;
+      margin-bottom: 4px;
+    }
+    .project-desc {
+      font-family: var(--font-ui);
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .project-tags {
+      display: flex;
+      gap: 6px;
+      margin-top: 8px;
+      flex-wrap: wrap;
+    }
+    .tag {
+      font-family: var(--font-ui);
+      font-size: 11px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 2px 10px;
+      color: var(--muted);
+      transition: background 0.3s ease, border-color 0.3s ease;
+    }
+    .project-arrow {
+      font-size: 20px;
+      color: var(--muted);
+      flex-shrink: 0;
+      margin-left: 1rem;
+    }
+
+    /* ── Others 區塊 ── */
+    .others-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 12px;
+    }
+    .other-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.25rem 1.5rem;
+      transition: border-color 0.2s, background 0.3s ease;
+    }
+    .other-card:hover { border-color: var(--text); }
+    .other-card-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+    .other-icon {
+      font-size: 20px;
+      flex-shrink: 0;
+    }
+    .other-title {
+      font-family: var(--font-ui);
+      font-size: 15px;
+      font-weight: 500;
+    }
+    .other-sub {
+      font-family: var(--font-ui);
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 2px;
+    }
+    .other-year {
+      font-family: var(--font-ui);
+      font-size: 13px;
+      color: var(--muted);
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 2px 10px;
+      display: inline-block;
+      margin-top: 8px;
+      transition: background 0.3s ease, border-color 0.3s ease;
+    }
+
+    /* ── 通用 燈箱 ── */
+    .gif-wrap {
+      margin-top: 10px;
+      cursor: zoom-in;
+      display: inline-block;
+      width: 100%;
+    }
+    .gif-wrap img {
+      width: 100%;
+      border-radius: 8px;
+      display: block;
+      transition: opacity 0.2s;
+    }
+    .gif-wrap:hover img { opacity: 0.85; }
+ 
+    .lightbox {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.88);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      cursor: zoom-out;
+      animation: lbFadeIn 0.2s ease;
+    }
+    .lightbox.active { display: flex; }
+    .lightbox img {
+      max-width: 90vw;
+      max-height: 90vh;
+      border-radius: 10px;
+      box-shadow: 0 12px 60px rgba(0,0,0,0.6);
+      animation: lbScaleIn 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    .lightbox-close {
+      position: absolute;
+      top: 20px;
+      right: 24px;
+      font-size: 28px;
+      color: #fff;
+      cursor: pointer;
+      line-height: 1;
+      opacity: 0.7;
+      transition: opacity 0.2s;
+    }
+    .lightbox-close:hover { opacity: 1; }
+    @keyframes lbFadeIn {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+    @keyframes lbScaleIn {
+      from { transform: scale(0.85); opacity: 0; }
+      to   { transform: scale(1);    opacity: 1; }
+    }
+
+    /* ── 聯絡區塊 ── */
+    .contact-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 2.5rem;
+      text-align: center;
+      transition: background 0.3s ease, border-color 0.3s ease;
+    }
+    .contact-box h2 {
+      font-size: 28px;
+      font-weight: normal;
+      margin-bottom: 0.75rem;
+    }
+    .contact-box p {
+      color: var(--muted);
+      margin-bottom: 1.5rem;
+    }
+    .social-row {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      margin-top: 1.5rem;
+    }
+    .social-link {
+      font-family: var(--font-ui);
+      font-size: 13px;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: color 0.2s;
+    }
+    .social-link:hover { color: var(--text); }
+
+    /* ── 頁腳 ── */
+    footer {
+      padding: 2rem 0;
+      text-align: center;
+      margin-top: 4rem;
+      border-top: 1px solid var(--border);
+      transition: border-color 0.3s ease;
+    }
+    footer p {
+      font-family: var(--font-ui);
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    /* ── 動畫 ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .hero, section { animation: fadeUp 0.6s ease both; }
+    section:nth-child(2) { animation-delay: 0.1s; }
+    section:nth-child(3) { animation-delay: 0.2s; }
+    section:nth-child(4) { animation-delay: 0.3s; }
+
+    /* ── 響應式 ── */
+    @media (max-width: 600px) {
+      .nav-inner { padding: 1rem; }
+      .container { padding: 0 1rem; }
+      .about-grid { grid-template-columns: 1fr; }
+      .avatar { width: 80px; }
+      .hero { padding: 3rem 0 2.5rem; }
+      .contact-box { padding: 1.5rem; }
+      .social-row { flex-wrap: wrap; }
+      .nav-links { gap: 16px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── 導覽列 ── -->
+  <nav>
+    <div class="nav-inner">
+      <span class="logo"><a href="#head">王煜景 Yu-Ching Wang</a></span>
+      <div class="nav-right">
+        <ul class="nav-links">
+          <li><a href="#about">關於</a></li>
+          <li><a href="#skills">技術</a></li>
+          <li><a href="#projects">作品</a></li>
+          <li><a href="#others">其他</a></li>
+          <li><a href="#contact">聯絡</a></li>
+        </ul>
+        <!-- 深色模式切換按鈕 -->
+        <button class="theme-toggle" id="themeToggle" aria-label="切換深色模式">
+          <span class="theme-toggle-icon icon-sun"></span>
+          <span class="theme-toggle-icon icon-moon"></span>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ── Hero ── -->
+  <div class="container">
+    <section class="hero" id="head">
+      <span class="hero-tag">AAEON / Student</span>
+      <h1>王煜景 Yu-Ching Wang<br></h1>
+      <p>Loading...</p>
+      <p>將就讀國立台灣科技大學電機工程學系 人工智能應用所。</p>
+      <div class="btn-row">
+        <a href="#projects" class="btn btn-dark">Projects</a>
+        <a href="#contact" class="btn btn-outline">Contact Me</a>
+      </div>
+    </section>
+
+    <hr />
+
+    <!-- ── 關於 ── -->
+    <section id="about">
+      <div class="section-label">About me</div>
+      <div class="about-grid">
+        <img src="pic_1.jpg" alt="個人照" class="avatar" />
+        <div class="about-text">
+          <h2>王煜景</h2>
+          <p>[Education]</p>
+          <p>• 國立彰化師範大學 資訊工程學系（2021–2025）</p>
+          <p>• 台中一中（2018–2021）</p>
+          <p>[Experience]</p>
+          <p>• 師盟共同學習教室 教學助理（2022-2023）</p>
+          <p>出生於2003年，目前計畫向AI邊緣運算發展，希望能找到適合的教授。</p>
+          <p>曾改過名，舊名是王漠井，愛好聽日本音樂，NBA支持馬刺。</p>
+        </div>
+      </div>
+    </section>
+
+    <hr />
+
+    <!-- ── 技能 ── -->
+    <section id="skills">
+      <div class="section-label">Skills</div>
+      <div class="skills-grid">
+        <div class="skill-card">
+          
+          <div class="skill-title">Programming Language</div>
+          <div class="skill-desc">Software Development: Python、C++、C#、Java</div>
+          <div class="skill-desc">Hardware Development: Verilog</div>
+        </div>
+        <div class="skill-card">
+          
+          <div class="skill-title">AI、Machine Learning</div>
+          <div class="skill-desc">TensorFlow、YOLO、OpenCV、Mediapipe、ROS</div>
+        </div>
+        <div class="skill-card">
+          
+          <div class="skill-title">Android app</div>
+          <div class="skill-desc">Java、Kotlin</div>
+        </div>
+      </div>
+    </section>
+
+    <hr />
+
+    <!-- ── 作品 ── -->
+    <section id="projects">
+      <div class="section-label">Projects</div>
+      <div class="project-list">
+
+        <a href="https://youtu.be/pey2tOBr-4Q?si=qn5SO8AUY11TaMS7" target="_blank" class="project-card">
+          <img src="sign_lan.jpg" alt="手語辨識示意圖" style="width:170px;height:100px;object-fit:cover;border-radius:8px;flex-shrink:0;" />
+          <div>
+            <div class="project-name">即時手語辨識於行動裝置(2023)</div>
+            <div class="project-desc">利用Mediapipe與TensorFlow建立LSTM模型</div>
+            <div class="project-tags">
+              <span class="tag">Mediapipe</span>
+              <span class="tag">TensorFlow</span>
+            </div>
+          </div>
+          <span class="project-arrow">→</span>
+        </a>
+
+        <a href="https://youtube.com/shorts/kQj1h6GxvAk?feature=share" target="_blank" class="project-card">
+          <img src="ylight.jpg" alt="黃燈亮示意圖" style="width:170px;height:100px;object-fit:cover;border-radius:8px;flex-shrink:0;" />
+          <div>
+            <div class="project-name">溫度感應控制風扇開關(2023)</div>
+            <div class="project-desc">利用Arduino及些許零件達到節能省電效果</div>
+            <div class="project-tags">
+              <span class="tag">Arduino</span>
+              <span class="tag">電銲烙鐵</span>
+            </div>
+          </div>
+          <span class="project-arrow">→</span>
+        </a>
+
+        <a href="https://youtu.be/86xouvdHzPk" target="_blank" class="project-card">
+          <img src="ros.jpg" alt="智慧點餐車示意圖" style="width:170px;height:100px;object-fit:cover;border-radius:8px;flex-shrink:0;" />
+          <div>
+            <div class="project-name">ROS智慧點餐車(2024)</div>
+            <div class="project-desc">利用Nvidia Jetson nano板開發ROS小車</div>
+            <div class="project-tags">
+              <span class="tag">Python</span>
+              <span class="tag">Linux</span>
+              <span class="tag">ROS</span>
+            </div>
+          </div>
+          <span class="project-arrow">→</span>
+        </a>
+
+        <a href="https://youtu.be/LzLShL4aStQ" target="_blank" class="project-card">
+          <img src="game_1.jpg" alt="防彈小遊戲示意圖" style="width:170px;height:100px;object-fit:cover;border-radius:8px;flex-shrink:0;" />
+          <div>
+            <div class="project-name">防彈小遊戲(2024)</div>
+            <div class="project-desc">利用Mediapipe偵測手指比畫的圖形</div>
+            <div class="project-desc">，8種圖形使用yolo訓練</div>
+            <div class="project-tags">
+              <span class="tag">Mediapipe</span>
+              <span class="tag">Yolov4</span>
+              <span class="tag">Python</span>
+            </div>
+          </div>
+          <span class="project-arrow">→</span>
+        </a>
+
+      </div>
+    </section>
+
+    <hr />
+
+    <!-- ── Others ── -->
+    <section id="others">
+      <div class="section-label">Others</div>
+      <div class="others-grid">
+
+        <div class="other-card">
+          <div class="other-card-header">
+            <div class="other-title">Recommended Music</div>
+          </div>
+          <div class="other-sub"><a href="https://www.youtube.com/@nbuna" target="_blank" > • ヨルシカ</a></div>
+          <div class="other-sub"><a href="https://www.youtube.com/@ZUTOMAYO" target="_blank"> • ZUTOMAYO</a></div>
+          <div class="other-sub"><a href="https://www.youtube.com/@ooo0eve0ooo" target="_blank"> • Eve</a></div>
+          <div class="other-sub"><a href="https://www.youtube.com/@KingGnuOfficial" target="_blank"> • King Gnu</a></div>
+          <div class="other-sub"><a href="https://www.youtube.com/@KenshiYonezu" target="_blank"> • 米津玄師</a></div>
+          <div class="other-sub"><a href="https://www.youtube.com/@373OFF" target="_blank"> • 美波</a></div>
+          <div class="other-sub"><a href="https://www.youtube.com/@aimerSMEJ" target="_blank"> • Aimer</a></div>
+          <span class="other-year"><a href="https://youtu.be/OHAjc-ayhus?si=rusmH0ZYV70ihM4Q" target="_blank" >Bubble</a></span>
+          <span class="other-year"><a href="https://youtu.be/BVvvUGP0MFw?si=s4H3JJwLCMVkWfuZ" target="_blank">MIRROR TUNE</a></span>
+          <span class="other-year"><a href="https://youtu.be/ySpIrrCmiCU?si=HQ7hrCILwEEosFdW" target="_blank">Wind's Anthem</a></span>
+        </div>
+
+        <div class="other-card">
+          <div class="other-card-header">
+            <div class="other-title">Recommended Anime</div>
+          </div>
+          <div class="other-sub"><a href="https://ani.gamer.com.tw/animeVideo.php?sn=31599" target="_blank" > • ぼっち・ざ・ろっく！</a></div>
+          <div class="other-sub"><a href="https://ani.gamer.com.tw/animeVideo.php?sn=21671" target="_blank" > • ゆるキャン△</a></div>
+          <div class="other-sub"><a href="https://www.netflix.com/tw/title/82031882" target="_blank" > • 氷の城壁</a></div>
+          <div class="gif-wrap" onclick="document.getElementById('lb').classList.add('active')">
+            <img src="btr_2.gif" alt="btr_2" style="width: 100%; border-radius: 8px; margin-top: 8px;" />
+          </div>
+        </div>
+
+        <div class="other-card">
+          <div class="other-card-header">
+            <div class="other-title">Awards</div>
+          </div>
+          <div class="other-sub"><a href="https://eedept.ncue.edu.tw/innovation2023/index.html" target="_blank" >
+            • 全國大專院校產學創新實作競賽 人工智慧及其應用組 最佳創新獎
+          </a></div>
+          <div class="other-sub"><a href="https://perma.nutn.edu.tw/news3/view/7f09ea3f-ad03-413a-b3a3-6f3c70911461" target="_blank" >
+            • 全國AI專題創意競賽 人工智慧組 佳作
+          </a></div>
+          <div class="other-sub">感謝我強力的朋友們
+          </div>
+          <div class="gif-wrap" >
+            <img src="competition.jpg" alt="ncue" style="width: 100%; border-radius: 8px; margin-top: 8px;" />
+          </div>
+          <span class="other-year">2023</span>
+        </div>
+
+<!--         <div class="other-card">
+          <div class="other-card-header">
+            <span class="other-icon">🌏</span>
+            <div class="other-title">課外活動 / Activities</div>
+          </div>
+          <div class="other-sub">（範例）系學會 副會長</div>
+          <div class="other-sub">（範例）籃球校隊</div>
+          <span class="other-year">2021–2025</span>
+        </div> shift+alt+a
+
+      </div>-->
+    </section>
+
+    <hr />
+
+    <!-- ── 聯絡 ── -->
+    <section id="contact">
+      <div class="contact-box">
+        <h2>Contact Me</h2>
+        <p></p>
+        <div class="social-row">
+          <a href="https://mail.google.com/mail/?view=cm&to=yujingw406@gmail.com" target="_blank" class="social-link">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M24 5.457v13.909c0 .904-.732 1.636-1.636 1.636h-3.819V11.73L12 16.364l-6.545-4.636v9.273H1.636A1.636 1.636 0 010 19.366V5.457c0-2.023 2.309-3.178 3.927-1.964L12 9.091l8.073-5.598C21.69 2.28 24 3.434 24 5.457z"/>
+            </svg>
+            Gmail
+          </a>
+          <a href="https://github.com/Morgem123" target="_blank" class="social-link">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.44 9.8 8.2 11.37.6.1.82-.26.82-.58v-2.04c-3.34.72-4.04-1.6-4.04-1.6-.54-1.38-1.33-1.75-1.33-1.75-1.08-.74.08-.72.08-.72 1.2.08 1.83 1.23 1.83 1.23 1.06 1.82 2.8 1.3 3.48.99.1-.77.41-1.3.75-1.6-2.67-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.13-.3-.54-1.52.11-3.18 0 0 1.01-.32 3.3 1.23a11.5 11.5 0 013.01-.4c1.02 0 2.05.13 3.01.4 2.28-1.55 3.3-1.23 3.3-1.23.65 1.66.24 2.88.12 3.18.77.84 1.23 1.91 1.23 3.22 0 4.61-2.81 5.62-5.48 5.92.43.37.81 1.1.81 2.22v3.29c0 .32.22.69.83.57C20.57 21.8 24 17.3 24 12c0-6.63-5.37-12-12-12z"/>
+            </svg>
+            GitHub
+          </a>
+          <a href="https://www.linkedin.com/in/yujingw406/" target="_blank" class="social-link">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+            </svg>
+            LinkedIn
+          </a>
+          <a href="https://www.facebook.com/wang.mo.jing.2025" target="_blank" class="social-link">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+            </svg>
+            Facebook
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── 頁腳 ── -->
+    <footer>
+      <p>© 2026 Yu-Ching · Claude Support</p>
+    </footer>
+
+  </div><!-- /.container -->
+
+  <script>
+    const toggle = document.getElementById('themeToggle');
+    const html = document.documentElement;
+
+    // 記住使用者上次的選擇
+    const saved = localStorage.getItem('theme');
+    if (saved) html.setAttribute('data-theme', saved);
+
+    toggle.addEventListener('click', () => {
+      const isDark = html.getAttribute('data-theme') === 'dark';
+      const next = isDark ? 'light' : 'dark';
+      html.setAttribute('data-theme', next);
+      localStorage.setItem('theme', next);
+    });
+
+    document.querySelectorAll('.gif-wrap').forEach(wrap => {
+      wrap.addEventListener('click', () => {
+        const img = wrap.querySelector('img');
+        document.getElementById('lbImg').src = img.src;
+        document.getElementById('lb').classList.add('active');
+      });
+    });
+  </script>
+
+  <div class="lightbox" id="lb" onclick="this.classList.remove('active')">
+    <img id="lbImg" src="" alt="" />
+  </div>
+
+</body>
+</html>
